@@ -1,5 +1,5 @@
 # mariadb-docker
-*What is MariaDB?*
+**What is MariaDB?**
 
 MariaDB is a community-developed fork of the MySQL relational database management system intended to remain free under the GNU GPL. Being a fork of a leading open source software system, it is notable for being led by the original developers of MySQL, who forked it due to concerns over its acquisition by Oracle. Contributors are required to share their copyright with the MariaDB Foundation.
 
@@ -7,10 +7,11 @@ The intent is also to maintain high compatibility with MySQL, ensuring a .€œdrop
 
 [MariaDB](http://wikipedia.org/wiki/MariaDB)
 
-*Container Volumes:*
+**Container Volumes:**
 
  * /var/lib/mysql : Database storage volume
 
-*Network Ports:*
+**Network Ports:**
 
  * 3306 : Default port for MariaDB
+
