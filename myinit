@@ -26,6 +26,10 @@ if [ ! -d ${DATADIR}/mysql ]; then
   #invoke init routines
   echo "First run... setting up..."
   mysql_install_db --defaults-extra-file=${CONFDIR}/my.cnf
+  chown mysql:mysql -Rv ${DATADIR}
+fi
+if [ -n "${MYSQL_SET_ROOT_PASSWORD}" ]; then
+  echo "Asked to reset root password..."
   cat > /tmp/init.sql << EOF
 DELETE FROM mysql.user ;
 CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
@@ -33,9 +37,7 @@ GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
 DROP DATABASE IF EXISTS test ;
 FLUSH PRIVILEGES ;
 EOF
-  chown mysql:mysql -Rv ${DATADIR}
   INITFILE='--init-file /tmp/init.sql'
-  # /usr/libexec/mysqld --defaults-extra-file=${CONFDIR}/my.cnf --init-file /tmp/init.sql
 fi
 # Start mysqld:
 if [ -x /usr/libexec/mysqld ]; then
