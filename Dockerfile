@@ -2,12 +2,12 @@ FROM roninkenji/slackware-base:latest
 MAINTAINER roninkenji
 
 RUN slackpkg -batch=on -default_answer=yes install libaio cxxlibs mariadb && rm -rv /usr/doc
-COPY rc.mysqld /etc/rc.d/
-RUN chmod +x /etc/rc.d/rc.mysqld
-RUN echo "!includedir /etc/my.cnf.custom" >> /etc/my.cnf && mkdir -p /etc/my.cnf.custom
+COPY myinit /tmp/
+RUN chmod +x /tmp/myinit
 
-VOLUME ["/etc/my.d.custom", "/var/lib/mysql" ]
+ENV MYSQL_ROOT_PASSWORD=password
+VOLUME ["/srv/config", "/srv/data" ]
 EXPOSE 3306
 
-ENTRYPOINT ["/etc/rc.d/rc.mysqld", "start"]
+ENTRYPOINT ["/tmp/myinit"]
 
