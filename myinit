@@ -40,14 +40,11 @@ EOF
   INITFILE='--init-file /tmp/init.sql'
 fi
 # Start mysqld:
-if [ -x /usr/libexec/mysqld ]; then
-  # If there is an old PID file (no mysqld running), clean it up:
-  if [ -r /var/run/mysql/mysql.pid ]; then
-    if ! ps axc | grep mysqld 1> /dev/null 2> /dev/null ; then
-      echo "Cleaning up old /var/run/mysql/mysql.pid."
-      rm -f /var/run/mysql/mysql.pid
-    fi
+# If there is an old PID file (no mysqld running), clean it up:
+if [ -r /var/run/mysql/mysql.pid ]; then
+  if ! ps axc | grep mysqld 1> /dev/null 2> /dev/null ; then
+    echo "Cleaning up old /var/run/mysql/mysql.pid."
+    rm -f /var/run/mysql/mysql.pid
   fi
-  /usr/libexec/mysqld --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=/var/run/mysql/mysql.pid ${INITFILE}
-  # /usr/libexec/mysqld --defaults-extra-file=${CONFDIR}/my.cnf --basedir=/usr --datadir=${DATADIR} --plugin-dir=/usr/lib64/mysql/plugin --user=mysql --pid-file=/var/run/mysql/mysql.pid
 fi
+exec /usr/libexec/mysqld --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=/var/run/mysql/mysql.pid ${INITFILE}
