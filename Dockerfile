@@ -1,7 +1,7 @@
 FROM roninkenji/slackware-base:latest
 MAINTAINER roninkenji
 
-RUN slackpkg -batch=on -default_answer=yes install libaio cxxlibs mariadb && rm -rv /usr/doc
+RUN slackpkg -batch=on -default_answer=yes install libaio cxxlibs mariadb
 COPY myinit /tmp/
 RUN chmod +x /tmp/myinit
 
