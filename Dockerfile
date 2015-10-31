@@ -9,7 +9,6 @@ RUN wget -nv https://raw.githubusercontent.com/major/MySQLTuner-perl/master/basi
 RUN chmod +x /usr/local/bin/mysqltuner.pl
 
 ENV MYSQL_ROOT_PASSWORD=password
-VOLUME ["/srv/config", "/srv/data" ]
 EXPOSE 3306
 
 ENTRYPOINT ["/usr/local/bin/myinit"]
