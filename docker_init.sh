@@ -31,10 +31,7 @@ fi
 if [ -n "${MYSQL_SET_ROOT_PASSWORD}" ]; then
   echo "Asked to reset root password..."
   cat > /tmp/init.sql << EOF
-DELETE FROM mysql.user ;
-CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION ;
-DROP DATABASE IF EXISTS test ;
+ALTER USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
 FLUSH PRIVILEGES ;
 EOF
   INITFILE='--init-file /tmp/init.sql'
