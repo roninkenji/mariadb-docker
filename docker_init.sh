@@ -27,15 +27,24 @@ if [ ! -d ${DATADIR}/mysql ]; then
   echo "First run... setting up..."
   mysql_install_db --defaults-extra-file=${CONFDIR}/my.cnf
   chown mysql:mysql -Rv ${DATADIR}
-fi
-if [ -n "${MYSQL_SET_ROOT_PASSWORD}" ]; then
+
+  #initial user lockdown
+  cat > /tmp/init.sql << EOF
+DELETE FROM user WHERE USER LIKE "" OR HOST LIKE "${HOSTNAME}"
+CREATE USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}'
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION
+GRANT PROXY ON ''@'' TO 'root'@'%' WITH GRANT OPTION
+FLUSH PRIVILEGES
+EOF
+elif [ -n "${MYSQL_SET_ROOT_PASSWORD}" ]; then
   echo "Asked to reset root password..."
   cat > /tmp/init.sql << EOF
-ALTER USER 'root'@'%' IDENTIFIED BY '${MYSQL_ROOT_PASSWORD}' ;
-FLUSH PRIVILEGES ;
+UPDATE mysql.user SET PASSWORD=PASSWORD('${MYSQL_ROOT_PASSWORD}') WHERE USER='root' AND HOST='%'
+FLUSH PRIVILEGES
 EOF
-  INITFILE='--init-file /tmp/init.sql'
 fi
+
+[ -f /tmp/init.sql ] && INITFILE='--init-file=/tmp/init.sql'
 # Start mysqld:
 # If there is an old PID file (no mysqld running), clean it up:
 if [ -r /var/run/mysql/mysql.pid ]; then
@@ -44,4 +53,4 @@ if [ -r /var/run/mysql/mysql.pid ]; then
     rm -f /var/run/mysql/mysql.pid
   fi
 fi
-exec /usr/libexec/mysqld --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=/var/run/mysql/mysql.pid ${INITFILE}
+exec mysqld_safe --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=/var/run/mysql/mysql.pid ${INITFILE}
