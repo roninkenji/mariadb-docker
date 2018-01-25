@@ -1,7 +1,9 @@
 #!/bin/bash
-DATADIR=/srv/data
-CONFDIR=/srv/config
+DATADIR=/data
+CONFDIR=/config
+PIDFILE=/var/mysqld/mysql.pid
 MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD:-password}
+
 #install config files
 if [ ! -f ${CONFDIR}/my.cnf ]; then
   cat > ${CONFDIR}/my.cnf <<EOF
@@ -47,10 +49,10 @@ fi
 [ -f /tmp/init.sql ] && INITFILE='--init-file=/tmp/init.sql'
 # Start mysqld:
 # If there is an old PID file (no mysqld running), clean it up:
-if [ -r /var/run/mysql/mysql.pid ]; then
+if [ -r ${PIDFILE} ]; then
   if ! ps axc | grep mysqld 1> /dev/null 2> /dev/null ; then
-    echo "Cleaning up old /var/run/mysql/mysql.pid."
-    rm -f /var/run/mysql/mysql.pid
+    echo "Cleaning up old ${PIDFILE}."
+    rm -f ${PIDFILE}
   fi
 fi
-exec mysqld_safe --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=/var/run/mysql/mysql.pid ${INITFILE}
+exec mysqld_safe --defaults-extra-file=${CONFDIR}/my.cnf --pid-file=${PIDFILE} ${INITFILE}
