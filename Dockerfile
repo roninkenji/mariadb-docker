@@ -1,4 +1,4 @@
-FROM roninkenji/slackware-base:latest
+FROM roninkenji/slackware-base:14.1
 MAINTAINER roninkenji
 
 RUN slackpkg -batch=on -default_answer=yes install libaio cxxlibs mariadb perl
